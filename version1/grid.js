@@ -1,13 +1,7 @@
-function grid(tilesnum,size){
+function grid(tilesnum,size,ActionsEnum){
 
- this.ActionsEnum= {
-   up:0,
-   down:1,
-   left:2,
-   right:3,
- };
   var mytiles = new Array(tilesnum);
-  // var emptytiles;
+
   this.init_grid = function () {
     for (var i = 0; i < tilesnum; i++) {
       mytiles[i] = new Array(tilesnum);
@@ -49,154 +43,314 @@ function grid(tilesnum,size){
   }
 
   this.doaction = function (action) {
-    switch (action) {
-      case this.ActionsEnum.up:
-      pushup();
+    var flag1 = false;
+    var flag2 = false;
+    flag1 = RemoveGaps(action);
+    // AddDoubles(action);
+    flag2 = RemoveGaps(action);
+    if ((flag1 == true) || (flag2 == true) ) {
+      init_tile();
+    }
+  }
+
+  function RemoveGaps(direction) {
+    var flag = false;
+    switch (direction) {
+      case ActionsEnum.up:
+      flag = RemoveGapsUp();
       break;
 
-      case this.ActionsEnum.down:
-      pushdown();
+      case ActionsEnum.down:
+      flag = RemoveGapsDown();
       break;
 
-      case this.ActionsEnum.left:
-      pushleft();
+      case ActionsEnum.left:
+      flag = RemoveGapsLeft();
       break;
 
-      case this.ActionsEnum.right:
-      pushright();
+      case ActionsEnum.right:
+      flag = RemoveGapsRight();
+      break;
+
+      default:
+    }
+    return flag;
+  }
+
+  function AddDoubles(direction) {
+    switch (direction) {
+      case ActionsEnum.up:
+      AddDoublesUp();
+      break;
+
+      case ActionsEnum.down:
+      AddDoublesDown();
+      break;
+
+      case ActionsEnum.left:
+      AddDoublesLeft();
+      break;
+
+      case ActionsEnum.right:
+      AddDoublesRight();
       break;
 
       default:
     }
   }
-function RemoveGaps(direction) {
-  
-}
-  function pushleft()
+
+  function RemoveGapsLeft()
   {
-    var flag1 = false;
+    var flag = false;
     for (var rows = 0; rows < tilesnum; rows++)
     {
       for (var cols = tilesnum-1; cols >0; cols--)
       {
-        if (mytiles[cols][rows].value > 0)
+        if ((mytiles[cols][rows].value > 0)&&(mytiles[cols-1][rows].value == 0 ))
         {
-
-          if (mytiles[cols-1][rows].value == mytiles[cols][rows].value )
-          {
-            mytiles[cols-1][rows].doubleval();
-            mytiles[cols][rows].resetval();
-            // remove gaps
-            cols = tilesnum-1;
-            flag1 = true;
-          }
-          else if (mytiles[cols-1][rows].value == 0 )
-          {
-            mytiles[cols-1][rows].value = mytiles[cols][rows].value;
-            mytiles[cols][rows].resetval();
-            flag1 = true;
-          }
+          mytiles[cols-1][rows].value = mytiles[cols][rows].value;
+          mytiles[cols][rows].resetval();
+          flag = true;
         }
       }
     }
-    if (flag1 == true) {
-      init_tile();
-    }
+    return flag;
   }
 
-  function pushright()
+  function RemoveGapsRight()
   {
-    var flag1 = false;
+    var flag = false;
     for (var rows = 0; rows < tilesnum; rows++)
     {
       for (var cols = 0; cols <tilesnum-1; cols++)
       {
-        if (mytiles[cols][rows].value > 0)
+        if ((mytiles[cols][rows].value > 0)&&(mytiles[cols+1][rows].value == 0 ))
         {
-
-          if (mytiles[cols+1][rows].value == mytiles[cols][rows].value )
-          {
-            mytiles[cols+1][rows].doubleval();
-            mytiles[cols][rows].resetval();
-            cols = 0;
-            flag1 = true;
-          }
-          else if (mytiles[cols+1][rows].value == 0 )
-          {
-            mytiles[cols+1][rows].value = mytiles[cols][rows].value;
-            mytiles[cols][rows].resetval();
-            flag1 = true;
-          }
+          mytiles[cols+1][rows].value = mytiles[cols][rows].value;
+          mytiles[cols][rows].resetval();
+          flag = true;
         }
       }
     }
-    if (flag1 == true) {
-      init_tile();
-    }
+    return flag;
   }
 
-
-  function pushup()
+  function RemoveGapsUp()
   {
-    var flag1 = false;
+    var flag = false;
     for (var rows = tilesnum-1; rows >0; rows--)
     {
       for (var cols = 0; cols <tilesnum; cols++)
       {
-        if (mytiles[cols][rows].value > 0)
+        if ((mytiles[cols][rows].value > 0)&&(mytiles[cols][rows-1].value == 0 ))
         {
-
-          if (mytiles[cols][rows-1].value == mytiles[cols][rows].value )
-          {
-            mytiles[cols][rows-1].doubleval();
-            mytiles[cols][rows].resetval();
-            rows = tilesnum-1;
-            flag1 = true;
-          }
-          else if (mytiles[cols][rows-1].value == 0 )
-          {
-            mytiles[cols][rows-1].value = mytiles[cols][rows].value;
-            mytiles[cols][rows].resetval();
-            flag1 = true;
-          }
+          mytiles[cols][rows-1].value = mytiles[cols][rows].value;
+          mytiles[cols][rows].resetval();
+          flag = true;
         }
       }
     }
-    if (flag1 == true) {
-      init_tile();
-    }
+    return flag;
   }
 
-  function pushdown()
+  function RemoveGapsDown()
   {
-    var flag1 = false;
+    var flag = false;
     for (var rows = 0; rows < tilesnum-1; rows++)
     {
       for (var cols = 0; cols <tilesnum; cols++)
       {
-        if (mytiles[cols][rows].value > 0)
+        if ((mytiles[cols][rows].value > 0)&& (mytiles[cols][rows+1].value == 0 ))
         {
-
-          if (mytiles[cols][rows+1].value == mytiles[cols][rows].value )
-          {
-            mytiles[cols][rows+1].doubleval();
-            mytiles[cols][rows].resetval();
-            // remove gaps
-            rows=0;
-
-            flag1 = true;
-          }
-          else if (mytiles[cols][rows+1].value == 0 )
-          {
-            mytiles[cols][rows+1].value = mytiles[cols][rows].value;
-            mytiles[cols][rows].resetval();
-            flag1 = true;
-          }
+          mytiles[cols][rows+1].value = mytiles[cols][rows].value;
+          mytiles[cols][rows].resetval();
+          flag = true;
         }
       }
     }
-    if (flag1 == true) {
-      init_tile();
+    return flag;
+  }
+
+
+  function  AddDoublesLeft() {
+    for (var rows = 0; rows < tilesnum; rows++)
+    {
+      for (var cols = 0; cols <tilesnum-1; cols++)
+      {
+        if ((mytiles[cols][rows].value > 0)&&(mytiles[cols+1][rows].value == mytiles[cols][rows].value ))
+        {
+          mytiles[cols][rows].doubleval();
+          mytiles[cols+1][rows].resetval();
+        }
+      }
     }
   }
+
+
+
+  // end of file
 }
+
+  // function pushleft(action)
+  // {
+  //   var flag1 = false;
+  //   for (var rows = 0; rows < tilesnum; rows++)
+  //   {
+  //     for (var cols = tilesnum-1; cols >0; cols--)
+  //     {
+  //       if (mytiles[cols][rows].value > 0)
+  //       {
+  //
+  //         if (mytiles[cols-1][rows].value == mytiles[cols][rows].value )
+  //         {
+  //           mytiles[cols-1][rows].doubleval();
+  //           mytiles[cols][rows].resetval();
+  //           // remove gaps
+  //           cols = tilesnum-1;
+  //           flag1 = true;
+  //         }
+  //         else if (mytiles[cols-1][rows].value == 0 )
+  //         {
+  //           mytiles[cols-1][rows].value = mytiles[cols][rows].value;
+  //           mytiles[cols][rows].resetval();
+  //           flag1 = true;
+  //         }
+  //       }
+  //     }
+  //   }
+  //   if (flag1 == true) {
+  //     init_tile();
+  //   }
+  // }
+  //   function pushleft(action)
+  //   {
+  //     var flag = false;
+  //     RemoveGaps(action);
+  //     AddDoubles(action);
+  //     RemoveGaps(action);
+  //
+  //     for (var rows = 0; rows < tilesnum; rows++)
+  //     {
+  //       for (var cols = tilesnum-1; cols >0; cols--)
+  //       {
+  //         if (mytiles[cols][rows].value > 0)
+  //         {
+  //
+  //           if (mytiles[cols-1][rows].value == mytiles[cols][rows].value )
+  //           {
+  //             mytiles[cols-1][rows].doubleval();
+  //             mytiles[cols][rows].resetval();
+  //             // remove gaps
+  //             cols = tilesnum-1;
+  //             flag1 = true;
+  //           }
+  //           else if (mytiles[cols-1][rows].value == 0 )
+  //           {
+  //             mytiles[cols-1][rows].value = mytiles[cols][rows].value;
+  //             mytiles[cols][rows].resetval();
+  //             flag1 = true;
+  //           }
+  //         }
+  //       }
+  //     }
+  //     if (flag1 == true) {
+  //       init_tile();
+  //     }
+  //   }
+  //
+  //   function pushright(action)
+  //   {
+  //     var flag1 = false;
+  //     for (var rows = 0; rows < tilesnum; rows++)
+  //     {
+  //       for (var cols = 0; cols <tilesnum-1; cols++)
+  //       {
+  //         if (mytiles[cols][rows].value > 0)
+  //         {
+  //
+  //           if (mytiles[cols+1][rows].value == mytiles[cols][rows].value )
+  //           {
+  //             mytiles[cols+1][rows].doubleval();
+  //             mytiles[cols][rows].resetval();
+  //             cols = 0;
+  //             flag1 = true;
+  //           }
+  //           else if (mytiles[cols+1][rows].value == 0 )
+  //           {
+  //             mytiles[cols+1][rows].value = mytiles[cols][rows].value;
+  //             mytiles[cols][rows].resetval();
+  //             flag1 = true;
+  //           }
+  //         }
+  //       }
+  //     }
+  //     if (flag1 == true) {
+  //       init_tile();
+  //     }
+  //   }
+  //
+  //
+  //   function pushup(action)
+  //   {
+  //     var flag1 = false;
+  //     for (var rows = tilesnum-1; rows >0; rows--)
+  //     {
+  //       for (var cols = 0; cols <tilesnum; cols++)
+  //       {
+  //         if (mytiles[cols][rows].value > 0)
+  //         {
+  //
+  //           if (mytiles[cols][rows-1].value == mytiles[cols][rows].value )
+  //           {
+  //             mytiles[cols][rows-1].doubleval();
+  //             mytiles[cols][rows].resetval();
+  //             rows = tilesnum-1;
+  //             flag1 = true;
+  //           }
+  //           else if (mytiles[cols][rows-1].value == 0 )
+  //           {
+  //             mytiles[cols][rows-1].value = mytiles[cols][rows].value;
+  //             mytiles[cols][rows].resetval();
+  //             flag1 = true;
+  //           }
+  //         }
+  //       }
+  //     }
+  //     if (flag1 == true) {
+  //       init_tile();
+  //     }
+  //   }
+  //
+  //   function pushdown(action)
+  //   {
+  //     var flag1 = false;
+  //     for (var rows = 0; rows < tilesnum-1; rows++)
+  //     {
+  //       for (var cols = 0; cols <tilesnum; cols++)
+  //       {
+  //         if (mytiles[cols][rows].value > 0)
+  //         {
+  //
+  //           if (mytiles[cols][rows+1].value == mytiles[cols][rows].value )
+  //           {
+  //             mytiles[cols][rows+1].doubleval();
+  //             mytiles[cols][rows].resetval();
+  //             // remove gaps
+  //             rows=0;
+  //
+  //             flag1 = true;
+  //           }
+  //           else if (mytiles[cols][rows+1].value == 0 )
+  //           {
+  //             mytiles[cols][rows+1].value = mytiles[cols][rows].value;
+  //             mytiles[cols][rows].resetval();
+  //             flag1 = true;
+  //           }
+  //         }
+  //       }
+  //     }
+  //     if (flag1 == true) {
+  //       init_tile();
+  //     }
+  //   }
+  // }
