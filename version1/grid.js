@@ -7,13 +7,25 @@ function grid(tilesnum,size,ActionsEnum){
     for (var i = 0; i < tilesnum; i++) {
       this.mytiles[i] = new Array(tilesnum);
       for (var j = 0; j < tilesnum; j++) {
-        var mytile = new tile(i*size,j*size,size,255/(i+j+1));
+        var mytile = new tile(i*size,j*size,size);
         mytile.resetval();
         this.mytiles[i][j]= mytile;
       }
     }
     for (var l = 0; l < 2; l++) {
-      this.init_tile();
+      this.InitTile();
+    }
+    // test color
+    this.TestColor();
+  }
+  
+  this.TestColor = function () {
+    var val =2;
+    for (var i = 0; i < tilesnum; i++) {
+      for (var j = 0; j < tilesnum; j++) {
+        this.mytiles[i][j].UpdateValue(val);
+        val *= 2;
+      }
     }
   }
 
@@ -38,7 +50,7 @@ function grid(tilesnum,size,ActionsEnum){
     return empty;
   }
 
-  this.init_tile =  function () {
+  this.InitTile =  function () {
     var emptytiles = this.getempty();
     var rand = floor(random(emptytiles.length));
     this.mytiles[emptytiles[rand].x][emptytiles[rand].y].initval();
@@ -80,12 +92,14 @@ function grid(tilesnum,size,ActionsEnum){
             if (this.mytiles[cols][rows2].GetValue() == 0 ){
               this.mytiles[cols][rows2].UpdateValue(this.mytiles[cols][rows2-1].GetValue());
               this.mytiles[cols][rows2-1].resetval();
+              //this.show();
               flag = true;
             }else if (this.mytiles[cols][rows2].GetValue() ==  this.mytiles[cols][rows2-1].GetValue()) {
               if (rows2 <= DoubleLimit) {
                 DoubleLimit = rows2 ;
                 this.mytiles[cols][rows2].doubleval();
                 this.mytiles[cols][rows2-1].resetval();
+                //this.show();
                 flag = true;
               }
             }
@@ -107,12 +121,14 @@ function grid(tilesnum,size,ActionsEnum){
               this.mytiles[cols][rows2].UpdateValue(this.mytiles[cols][rows2+1].GetValue());
               this.mytiles[cols][rows2+1].resetval();
               flag = true;
+              //this.show();
             }else if (this.mytiles[cols][rows2].GetValue() ==  this.mytiles[cols][rows2+1].GetValue()) {
               if (rows2 >= DoubleLimit) {
                 DoubleLimit = rows2 ;
                 this.mytiles[cols][rows2].doubleval();
                 this.mytiles[cols][rows2+1].resetval();
                 flag = true;
+                //this.show();
               }
             }
           }
@@ -133,12 +149,14 @@ function grid(tilesnum,size,ActionsEnum){
               this.mytiles[cols2][rows].UpdateValue(this.mytiles[cols2-1][rows].GetValue());
               this.mytiles[cols2-1][rows].resetval();
               flag = true;
+              //this.show();
             }else if (this.mytiles[cols2][rows].GetValue() ==  this.mytiles[cols2-1][rows].GetValue()) {
               if (cols2 <= DoubleLimit) {
                 DoubleLimit = cols2 ;
                 this.mytiles[cols2][rows].doubleval();
                 this.mytiles[cols2-1][rows].resetval();
                 flag = true;
+                //this.show();
               }
             }
           }
@@ -159,12 +177,14 @@ function grid(tilesnum,size,ActionsEnum){
               this.mytiles[cols2][rows].UpdateValue(this.mytiles[cols2+1][rows].GetValue());
               this.mytiles[cols2+1][rows].resetval();
               flag = true;
+              //this.show();
             }else if (this.mytiles[cols2][rows].GetValue() ==  this.mytiles[cols2+1][rows].GetValue()) {
               if (cols2 >= DoubleLimit) {
                 DoubleLimit = cols2 ;
                 this.mytiles[cols2][rows].doubleval();
                 this.mytiles[cols2+1][rows].resetval();
                 flag = true;
+                //this.show();
               }
             }
           }

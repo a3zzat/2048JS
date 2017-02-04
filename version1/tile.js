@@ -1,7 +1,7 @@
-function tile(x,y,size,color) {
+function tile(x,y,size) {
   this.value =0 ;
-  this.colorval = 0;
-  this.initflag = false;
+  this.colorval  ;
+  // this.initflag = false;
 
   this.UpdateValue = function (val) {
     this.value = val;
@@ -13,9 +13,9 @@ function tile(x,y,size,color) {
   }
 
   this.initval = function () {
-    var init_val = random(7);
-    this.initflag = true;
-    if (init_val >=6) {
+    var RanVal = random(10);
+    // this.initflag = true;
+    if (RanVal >=9) {
       this.UpdateValue(4);
     } else {
       this.UpdateValue(2);
@@ -33,34 +33,33 @@ function tile(x,y,size,color) {
   }
 
   this.TileColors = function (value){
-    var val;
-    if (this.initflag == true) {
-      val  = 96;
-      this.initflag = false;
-    } else {
-      if (value > 0) {
-        if (value > 255) {
-          val = value % 255;
-        } else {
-          val = floor(255 /value);
-        }
-      }else {
-        val  = 255;
-      }
-    }
-    this.colorval = val;
+    var val = value*166;
+    var color = createVector(0,0,0);
+
+    // if(val < 256)
+
+    color.x = 256 - (floor(val / (2048)) % 256);
+    color.y = 256 - (floor(val / (1)) % 256);
+    color.z = 256 - (floor(val / (128)) % 256);
+
+    this.colorval = color;
   }
 
   this.show = function () {
-    colorMode(HSB, 255);
-    fill(this.colorval,this.colorval,this.colorval);
+    var ValString = str(this.value);
+    var ValStringSize = 72-9*ValString.length;
+    colorMode(RGB, 255);
+    strokeWeight(4);
+    fill(this.colorval.x,this.colorval.y,this.colorval.z);
     rect(x,y,size,size);
     // need to be adapted to text length
     if(this.value > 0){
-      textSize(64);
+      // textAlign(RIGHT,BOTTOM);
+      textSize(ValStringSize);
+      var sWidth = textWidth(ValString);
       // need to fix color
-      fill(floor(256/(color+1)));
-      text(str(this.value), x+(size/2)-(size/6), y+(size/2)+(size/6));
+      fill(0);
+      text(str(this.value), x+((size-sWidth)/2), y+((size)-12*(size/ValStringSize)));
     }
   }
 }
