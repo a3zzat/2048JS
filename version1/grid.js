@@ -27,7 +27,7 @@ function grid(tilesnum,size,ActionsEnum){
     var empty =[];
     for (var i = 0; i < tilesnum; i++) {
       for (var j = 0; j < tilesnum; j++) {
-        if (mytiles[i][j].value === 0) {
+        if (mytiles[i][j].GetValue() === 0) {
           var cord = createVector(i,j);
           empty.push(cord);
         }
@@ -106,9 +106,9 @@ function grid(tilesnum,size,ActionsEnum){
     {
       for (var cols = tilesnum-1; cols >0; cols--)
       {
-        if ((mytiles[cols][rows].value > 0)&&(mytiles[cols-1][rows].value == 0 ))
+        if ((mytiles[cols][rows].GetValue() > 0)&&(mytiles[cols-1][rows].GetValue() == 0 ))
         {
-          mytiles[cols-1][rows].value = mytiles[cols][rows].value;
+          mytiles[cols-1][rows].UpdateValue(mytiles[cols][rows].GetValue());
           mytiles[cols][rows].resetval();
           flag = true;
         }
@@ -124,9 +124,9 @@ function grid(tilesnum,size,ActionsEnum){
     {
       for (var cols = 0; cols <tilesnum-1; cols++)
       {
-        if ((mytiles[cols][rows].value > 0)&&(mytiles[cols+1][rows].value == 0 ))
+        if ((mytiles[cols][rows].GetValue() > 0)&&(mytiles[cols+1][rows].GetValue() == 0 ))
         {
-          mytiles[cols+1][rows].value = mytiles[cols][rows].value;
+          mytiles[cols+1][rows].UpdateValue(mytiles[cols][rows].GetValue());
           mytiles[cols][rows].resetval();
           flag = true;
         }
@@ -142,9 +142,9 @@ function grid(tilesnum,size,ActionsEnum){
     {
       for (var cols = 0; cols <tilesnum; cols++)
       {
-        if ((mytiles[cols][rows].value > 0)&&(mytiles[cols][rows-1].value == 0 ))
+        if ((mytiles[cols][rows].GetValue() > 0)&&(mytiles[cols][rows-1].GetValue() == 0 ))
         {
-          mytiles[cols][rows-1].value = mytiles[cols][rows].value;
+          mytiles[cols][rows-1].UpdateValue(mytiles[cols][rows].GetValue());
           mytiles[cols][rows].resetval();
           flag = true;
         }
@@ -160,9 +160,9 @@ function grid(tilesnum,size,ActionsEnum){
     {
       for (var cols = 0; cols <tilesnum; cols++)
       {
-        if ((mytiles[cols][rows].value > 0)&& (mytiles[cols][rows+1].value == 0 ))
+        if ((mytiles[cols][rows].GetValue() > 0)&& (mytiles[cols][rows+1].GetValue() == 0 ))
         {
-          mytiles[cols][rows+1].value = mytiles[cols][rows].value;
+          mytiles[cols][rows+1].UpdateValue(mytiles[cols][rows].GetValue());
           mytiles[cols][rows].resetval();
           flag = true;
         }
@@ -177,7 +177,7 @@ function grid(tilesnum,size,ActionsEnum){
     {
       for (var cols = 0; cols <tilesnum-1; cols++)
       {
-        if ((mytiles[cols][rows].value > 0)&&(mytiles[cols+1][rows].value == mytiles[cols][rows].value ))
+        if ((mytiles[cols][rows].GetValue() > 0)&&(mytiles[cols+1][rows].GetValue() == mytiles[cols][rows].GetValue() ))
         {
           mytiles[cols][rows].doubleval();
           mytiles[cols+1][rows].resetval();
