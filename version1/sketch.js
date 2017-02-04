@@ -25,12 +25,12 @@ function draw() {
 
 function keyPressed() {
   if (keyCode === UP_ARROW) {
-    mygrid.doaction(ActionsEnum.up);
+    mygrid.DoAction(ActionsEnum.up);
   } else if (keyCode === DOWN_ARROW) {
-    mygrid.doaction(ActionsEnum.down);
+    mygrid.DoAction(ActionsEnum.down);
   } else if (keyCode === LEFT_ARROW) {
-    mygrid.doaction(ActionsEnum.left);
+    mygrid.DoAction(ActionsEnum.left);
   } else if (keyCode === RIGHT_ARROW) {
-    mygrid.doaction(ActionsEnum.right);
+    mygrid.DoAction(ActionsEnum.right);
   }
 }

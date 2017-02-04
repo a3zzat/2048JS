@@ -1,25 +1,44 @@
 function tile(x,y,size,color) {
   this.value =0 ;
+  this.ValLock = false;
   this.colorval = 0;
   this.initflag = false;
+
+this.UnLockVal = function () {
+  this.ValLock = false;
+}
+
+this.LockVal = function () {
+  this.ValLock = true;
+}
+
+this.GetLockVal = function () {
+    return this.ValLock ;
+}
+
   this.UpdateValue = function (val) {
     this.value = val;
     this.TileColors(val);
   }
+
   this.GetValue = function () {
     return this.value;
   }
+
   this.initval = function () {
     var init_val = random(7);
-this.initflag = true;
+    this.initflag = true;
     if (init_val >=6) {
       this.UpdateValue(4);
     } else {
       this.UpdateValue(2);
     }
   }
+
   this.doubleval = function(){
-    this.UpdateValue((this.GetValue ()*2));
+    if (!this.ValLock) {
+      this.UpdateValue((this.GetValue ()*2));
+    }  
   }
 
   this.resetval = function () {
@@ -42,7 +61,6 @@ this.initflag = true;
         val  = 255;
       }
     }
-
     this.colorval = val;
   }
 

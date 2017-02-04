@@ -1,20 +1,17 @@
 function grid(tilesnum,size,ActionsEnum){
 
-  this.tilesvals = new Array(tilesnum);
   var mytiles = new Array(tilesnum);
 
   this.init_grid = function () {
     for (var i = 0; i < tilesnum; i++) {
       mytiles[i] = new Array(tilesnum);
-      this.tilesvals[i] = new Array(tilesnum);
       for (var j = 0; j < tilesnum; j++) {
         var mytile = new tile(i*size,j*size,size,255/(i+j+1));
         mytile.resetval();
         mytiles[i][j]= mytile;
-        this.tilesvals[i][j] = mytiles[i][j].GetValue();
       }
     }
-    for (var l = 0; l < 10; l++) {
+    for (var l = 0; l < 2; l++) {
       init_tile();
     }
   }
@@ -23,7 +20,6 @@ function grid(tilesnum,size,ActionsEnum){
     for (var i = 0; i < tilesnum; i++) {
       for (var j = 0; j < tilesnum; j++) {
         mytiles[i][j].show();
-        this.tilesvals = mytiles[i][j].GetValue();
       }
     }
   }
@@ -47,316 +43,132 @@ function grid(tilesnum,size,ActionsEnum){
     mytiles[emptytiles[rand].x][emptytiles[rand].y].initval();
   }
 
-  this.doaction = function (action) {
-    var flag1 = false;
-    var flag2 = false;
-    flag1 = RemoveGaps(action);
-    // AddDoubles(action);
-    flag2 = RemoveGaps(action);
-    if ((flag1 == true) || (flag2 == true) ) {
-      // removed for debug
-      // init_tile();
-    }
-  }
-
-  function RemoveGaps(direction) {
+  this.DoAction = function(action) {
     var flag = false;
-    switch (direction) {
+    switch (action) {
       case ActionsEnum.up:
-      flag = RemoveGapsUp();
+      flag = MoveUp();
       break;
 
       case ActionsEnum.down:
-      flag = RemoveGapsDown();
+      flag = MoveDown();
       break;
 
       case ActionsEnum.left:
-      flag = RemoveGapsLeft();
+      flag = MoveLeft();
       break;
 
       case ActionsEnum.right:
-      flag = RemoveGapsRight();
+      flag = MoveRight();
       break;
 
       default:
     }
-    return flag;
-  }
-
-  function AddDoubles(direction) {
-    switch (direction) {
-      case ActionsEnum.up:
-      AddDoublesUp();
-      break;
-
-      case ActionsEnum.down:
-      AddDoublesDown();
-      break;
-
-      case ActionsEnum.left:
-      AddDoublesLeft();
-      break;
-
-      case ActionsEnum.right:
-      AddDoublesRight();
-      break;
-
-      default:
+    if (flag == true) {
+      init_tile();
+      UnLockGrid();
     }
   }
 
-  function RemoveGapsLeft()
-  {
+  function UnLockGrid(){
+    for (var i = 0; i < tilesnum; i++) {
+      for (var j = 0; j < tilesnum; j++) {
+        mytiles[i][j].UnLockVal();
+      }
+    }
+  }
+
+  function MoveDown(){
     var flag = false;
-    for (var rows = 0; rows < tilesnum; rows++)
-    {
-      for (var cols = tilesnum-1; cols >0; cols--)
-      {
-        if ((mytiles[cols][rows].GetValue() > 0)&&(mytiles[cols-1][rows].GetValue() == 0 ))
-        {
-          mytiles[cols-1][rows].UpdateValue(mytiles[cols][rows].GetValue());
-          mytiles[cols][rows].resetval();
-          flag = true;
+    for (var cols = 0; cols <tilesnum; cols++){
+      for (var rows = tilesnum-2; rows >=0; rows--){
+        if (mytiles[cols][rows].GetValue() > 0){
+          for (var rows2 = rows+1; rows2 < tilesnum; rows2++) {
+            if (mytiles[cols][rows2].GetValue() == 0 ){
+              mytiles[cols][rows2].UpdateValue(mytiles[cols][rows2-1].GetValue());
+              mytiles[cols][rows2-1].resetval();
+              flag = true;
+            }else if (mytiles[cols][rows2].GetValue() ==  mytiles[cols][rows2-1].GetValue()) {
+              mytiles[cols][rows2].doubleval();
+              mytiles[cols][rows2].LockVal();
+              mytiles[cols][rows2-1].resetval();
+              flag = true;
+            }
+          }
         }
       }
     }
     return flag;
   }
 
-  function RemoveGapsRight()
-  {
+  function MoveUp(){
     var flag = false;
-    for (var rows = 0; rows < tilesnum; rows++)
-    {
-      for (var cols = 0; cols <tilesnum-1; cols++)
-      {
-        if ((mytiles[cols][rows].GetValue() > 0)&&(mytiles[cols+1][rows].GetValue() == 0 ))
-        {
-          mytiles[cols+1][rows].UpdateValue(mytiles[cols][rows].GetValue());
-          mytiles[cols][rows].resetval();
-          flag = true;
+    for (var cols = 0; cols <tilesnum; cols++){
+      for (var rows = 1; rows <tilesnum; rows++){
+        if (mytiles[cols][rows].GetValue() > 0){
+          for (var rows2 = rows-1; rows2 >=0; rows2--) {
+            if (mytiles[cols][rows2].GetValue() == 0 ){
+              mytiles[cols][rows2].UpdateValue(mytiles[cols][rows2+1].GetValue());
+              mytiles[cols][rows2+1].resetval();
+              flag = true;
+            }else if (mytiles[cols][rows2].GetValue() ==  mytiles[cols][rows2+1].GetValue()) {
+              mytiles[cols][rows2].doubleval();
+              mytiles[cols][rows2].LockVal();
+              mytiles[cols][rows2+1].resetval();
+              flag = true;
+            }
+          }
         }
       }
     }
     return flag;
   }
 
-  function RemoveGapsUp()
-  {
+  function MoveRight(){
     var flag = false;
-    for (var cols = 0; cols <tilesnum; cols++)
-    {
-      for (var rows = 1; rows < tilesnum; rows++)
-      {
-        if ((mytiles[cols][rows].GetValue() > 0)&&(mytiles[cols][rows-1].GetValue() == 0 ))
-        {
-          mytiles[cols][rows-1].UpdateValue(mytiles[cols][rows].GetValue());
-          mytiles[cols][rows].resetval();
-          flag = true;
+    for (var rows = 0; rows <tilesnum; rows++){
+      for (var cols = tilesnum-2; cols >=0; cols--){
+        if (mytiles[cols][rows].GetValue() > 0){
+          for (var cols2 = cols+1; cols2 < tilesnum; cols2++) {
+            if (mytiles[cols2][rows].GetValue() == 0 ){
+              mytiles[cols2][rows].UpdateValue(mytiles[cols2-1][rows].GetValue());
+              mytiles[cols2-1][rows].resetval();
+              flag = true;
+            }else if (mytiles[cols2][rows].GetValue() ==  mytiles[cols2-1][rows].GetValue()) {
+              mytiles[cols2][rows].doubleval();
+              mytiles[cols2][rows].LockVal();
+              mytiles[cols2-1][rows].resetval();
+              flag = true;
+            }
+          }
         }
       }
     }
     return flag;
   }
 
-  function RemoveGapsDown()
-  {
+  function MoveLeft(){
     var flag = false;
-    for (var cols = 0; cols <tilesnum; cols++)
-    {
-      for (var rows = tilesnum-2; rows >=0; rows--)
-      {
-        if ((mytiles[cols][rows].GetValue() > 0)&& (mytiles[cols][rows+1].GetValue() == 0 ))
-        {
-          mytiles[cols][rows+1].UpdateValue(mytiles[cols][rows].GetValue());
-          mytiles[cols][rows].resetval();
-          flag = true;
+    for (var rows = 0; rows <tilesnum; rows++){
+      for (var cols = 1; cols <tilesnum; cols++){
+        if (mytiles[cols][rows].GetValue() > 0){
+          for (var cols2 = cols-1; cols2 >=0; cols2--) {
+            if (mytiles[cols2][rows].GetValue() == 0 ){
+              mytiles[cols2][rows].UpdateValue(mytiles[cols2+1][rows].GetValue());
+              mytiles[cols2+1][rows].resetval();
+              flag = true;
+            }else if (mytiles[cols2][rows].GetValue() ==  mytiles[cols2+1][rows].GetValue()) {
+              mytiles[cols2][rows].doubleval();
+              mytiles[cols2][rows].LockVal();
+              mytiles[cols2+1][rows].resetval();
+              flag = true;
+            }
+          }
         }
       }
     }
     return flag;
   }
-
-
-  function  AddDoublesLeft() {
-    for (var rows = 0; rows < tilesnum; rows++)
-    {
-      for (var cols = 0; cols <tilesnum-1; cols++)
-      {
-        if ((mytiles[cols][rows].GetValue() > 0)&&(mytiles[cols+1][rows].GetValue() == mytiles[cols][rows].GetValue() ))
-        {
-          mytiles[cols][rows].doubleval();
-          mytiles[cols+1][rows].resetval();
-        }
-      }
-    }
-  }
-
-
 
   // end of file
 }
-
-// function pushleft(action)
-// {
-//   var flag1 = false;
-//   for (var rows = 0; rows < tilesnum; rows++)
-//   {
-//     for (var cols = tilesnum-1; cols >0; cols--)
-//     {
-//       if (mytiles[cols][rows].value > 0)
-//       {
-//
-//         if (mytiles[cols-1][rows].value == mytiles[cols][rows].value )
-//         {
-//           mytiles[cols-1][rows].doubleval();
-//           mytiles[cols][rows].resetval();
-//           // remove gaps
-//           cols = tilesnum-1;
-//           flag1 = true;
-//         }
-//         else if (mytiles[cols-1][rows].value == 0 )
-//         {
-//           mytiles[cols-1][rows].value = mytiles[cols][rows].value;
-//           mytiles[cols][rows].resetval();
-//           flag1 = true;
-//         }
-//       }
-//     }
-//   }
-//   if (flag1 == true) {
-//     init_tile();
-//   }
-// }
-//   function pushleft(action)
-//   {
-//     var flag = false;
-//     RemoveGaps(action);
-//     AddDoubles(action);
-//     RemoveGaps(action);
-//
-//     for (var rows = 0; rows < tilesnum; rows++)
-//     {
-//       for (var cols = tilesnum-1; cols >0; cols--)
-//       {
-//         if (mytiles[cols][rows].value > 0)
-//         {
-//
-//           if (mytiles[cols-1][rows].value == mytiles[cols][rows].value )
-//           {
-//             mytiles[cols-1][rows].doubleval();
-//             mytiles[cols][rows].resetval();
-//             // remove gaps
-//             cols = tilesnum-1;
-//             flag1 = true;
-//           }
-//           else if (mytiles[cols-1][rows].value == 0 )
-//           {
-//             mytiles[cols-1][rows].value = mytiles[cols][rows].value;
-//             mytiles[cols][rows].resetval();
-//             flag1 = true;
-//           }
-//         }
-//       }
-//     }
-//     if (flag1 == true) {
-//       init_tile();
-//     }
-//   }
-//
-//   function pushright(action)
-//   {
-//     var flag1 = false;
-//     for (var rows = 0; rows < tilesnum; rows++)
-//     {
-//       for (var cols = 0; cols <tilesnum-1; cols++)
-//       {
-//         if (mytiles[cols][rows].value > 0)
-//         {
-//
-//           if (mytiles[cols+1][rows].value == mytiles[cols][rows].value )
-//           {
-//             mytiles[cols+1][rows].doubleval();
-//             mytiles[cols][rows].resetval();
-//             cols = 0;
-//             flag1 = true;
-//           }
-//           else if (mytiles[cols+1][rows].value == 0 )
-//           {
-//             mytiles[cols+1][rows].value = mytiles[cols][rows].value;
-//             mytiles[cols][rows].resetval();
-//             flag1 = true;
-//           }
-//         }
-//       }
-//     }
-//     if (flag1 == true) {
-//       init_tile();
-//     }
-//   }
-//
-//
-//   function pushup(action)
-//   {
-//     var flag1 = false;
-//     for (var rows = tilesnum-1; rows >0; rows--)
-//     {
-//       for (var cols = 0; cols <tilesnum; cols++)
-//       {
-//         if (mytiles[cols][rows].value > 0)
-//         {
-//
-//           if (mytiles[cols][rows-1].value == mytiles[cols][rows].value )
-//           {
-//             mytiles[cols][rows-1].doubleval();
-//             mytiles[cols][rows].resetval();
-//             rows = tilesnum-1;
-//             flag1 = true;
-//           }
-//           else if (mytiles[cols][rows-1].value == 0 )
-//           {
-//             mytiles[cols][rows-1].value = mytiles[cols][rows].value;
-//             mytiles[cols][rows].resetval();
-//             flag1 = true;
-//           }
-//         }
-//       }
-//     }
-//     if (flag1 == true) {
-//       init_tile();
-//     }
-//   }
-//
-//   function pushdown(action)
-//   {
-//     var flag1 = false;
-//     for (var rows = 0; rows < tilesnum-1; rows++)
-//     {
-//       for (var cols = 0; cols <tilesnum; cols++)
-//       {
-//         if (mytiles[cols][rows].value > 0)
-//         {
-//
-//           if (mytiles[cols][rows+1].value == mytiles[cols][rows].value )
-//           {
-//             mytiles[cols][rows+1].doubleval();
-//             mytiles[cols][rows].resetval();
-//             // remove gaps
-//             rows=0;
-//
-//             flag1 = true;
-//           }
-//           else if (mytiles[cols][rows+1].value == 0 )
-//           {
-//             mytiles[cols][rows+1].value = mytiles[cols][rows].value;
-//             mytiles[cols][rows].resetval();
-//             flag1 = true;
-//           }
-//         }
-//       }
-//     }
-//     if (flag1 == true) {
-//       init_tile();
-//     }
-//   }
-// }
