@@ -18,9 +18,7 @@ function setup() {
 
 function draw() {
   background(10);
-
   mygrid.show();
-
 }
 
 function keyPressed() {

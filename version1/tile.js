@@ -1,20 +1,7 @@
 function tile(x,y,size,color) {
   this.value =0 ;
-  this.ValLock = false;
   this.colorval = 0;
   this.initflag = false;
-
-this.UnLockVal = function () {
-  this.ValLock = false;
-}
-
-this.LockVal = function () {
-  this.ValLock = true;
-}
-
-this.GetLockVal = function () {
-    return this.ValLock ;
-}
 
   this.UpdateValue = function (val) {
     this.value = val;
@@ -38,7 +25,7 @@ this.GetLockVal = function () {
   this.doubleval = function(){
     if (!this.ValLock) {
       this.UpdateValue((this.GetValue ()*2));
-    }  
+    }
   }
 
   this.resetval = function () {
