@@ -58,5 +58,4 @@ this.initflag = true;
       text(str(this.value), x+(size/2)-(size/6), y+(size/2)+(size/6));
     }
   }
-
 }
